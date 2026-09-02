@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 
-import CursorTrail from "@/components/cursor/CursorTrail";
 import IntroExperience from "@/components/intro/IntroExperience";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -18,9 +17,8 @@ export default function SiteExperience() {
   const handleComplete = useCallback(() => setIntroDone(true), []);
 
   return (
-    <div className={introDone ? "cursor-active" : ""}>
+    <div className="brand-monochrome">
       {!introDone && <IntroExperience onComplete={handleComplete} />}
-      <CursorTrail enabled={introDone} />
 
       <div aria-hidden={!introDone} className={introDone ? "" : "pointer-events-none"}>
         <Header />

@@ -14,8 +14,6 @@
   --beige-600: #9c7a4b;
   --beige-900: #4a3a25;
 
-  --signal-red: #ff2436;
-  --signal-red-dim: #b8101f;
 }
 
 @theme inline {
@@ -31,9 +29,6 @@
   --color-beige-500: var(--beige-500);
   --color-beige-600: var(--beige-600);
   --color-beige-900: var(--beige-900);
-
-  --color-signal: var(--signal-red);
-  --color-signal-dim: var(--signal-red-dim);
 
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
@@ -53,21 +48,14 @@ body {
 }
 
 ::selection {
-  background: var(--signal-red);
-  color: var(--paper);
+  background: var(--beige-300);
+  color: var(--ink);
 }
 
-/* Custom cursor: hide native pointer once the trail is active */
-.cursor-active,
-.cursor-active * {
-  cursor: none !important;
-}
-
-@media (max-width: 767px), (hover: none) {
-  .cursor-active,
-  .cursor-active * {
-    cursor: auto !important;
-  }
+/* Keep every marketing visual inside the Mirage Data black/white/beige world. */
+.brand-monochrome img,
+.brand-monochrome video {
+  filter: grayscale(1) sepia(0.16) saturate(0.72) contrast(1.03);
 }
 
 @keyframes fade-up-premium {

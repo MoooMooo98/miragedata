@@ -33,8 +33,8 @@ const PROJECTS: Project[] = [
       "Räumliche Architektur-Layer verbinden Bestand, Transformation und Ergebnis zu einer intuitiven, hochwertigen Experience.",
     impact:
       "Investoren verstehen den Wert schneller. Das stärkt Vertrauen und bringt fundierte Entscheidungen früher ins Gespräch.",
-    accent: "#b9d58c",
-    glow: "rgba(138, 176, 91, 0.28)",
+    accent: "#dbc7a1",
+    glow: "rgba(219, 199, 161, 0.24)",
     images: [
       "/portfolio/sustain-hero.png",
       "/portfolio/sustain-brand.png",
@@ -55,8 +55,8 @@ const PROJECTS: Project[] = [
       "Transparente Ebenen und bewusst reduzierte Bewegung geben den Inhalten Raum und führen den Blick ohne Ablenkung.",
     impact:
       "Weniger Distanz, schnellere Orientierung, mehr Vertrauen — genau dort, wo jede Kontaktaufnahme beginnt.",
-    accent: "#aeb9a2",
-    glow: "rgba(222, 227, 214, 0.34)",
+    accent: "#f4ede0",
+    glow: "rgba(233, 220, 196, 0.2)",
     images: [
       "/portfolio/bahadorifar-home.png",
       "/portfolio/bahadorifar-section.png",
@@ -77,8 +77,8 @@ const PROJECTS: Project[] = [
       "Kamerafahrten, Bühnenlicht und räumliche Medien übertragen die Intensität des Live-Events auf den Screen.",
     impact:
       "Mehr Aufmerksamkeit, stärkerer Erinnerungswert und klare Wege zu Tickets, Partnerschaften und Community.",
-    accent: "#ff3b32",
-    glow: "rgba(255, 36, 54, 0.30)",
+    accent: "#b89462",
+    glow: "rgba(184, 148, 98, 0.28)",
     images: [
       "/portfolio/evo-home.png",
       "/portfolio/evo-experience.jpg",

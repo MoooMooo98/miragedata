@@ -24,15 +24,15 @@ const PROJECTS: Project[] = [
     number: "01",
     name: "Sustain Estates",
     category: "Real Estate · Strategy · Web",
-    headline: "Transformation wird sichtbar, bevor sie gebaut wird.",
+    headline: "Wir machen Zukunft investierbar.",
     summary:
-      "Eine digitale Marken- und Produktwelt für nachhaltige Immobilienentwicklung — vom Bestand bis zur belastbaren Investitionsentscheidung.",
+      "Für Sustain Estates haben wir komplexe Immobilienentwicklung in eine klare Entscheidungswelt übersetzt — präzise, glaubwürdig und bereit für Investoren.",
     built:
-      "Strategische Website, Case-Study-System, FaaS-Kommunikation und eine klare visuelle Übersetzung komplexer Immobilienprozesse.",
+      "Positionierung, Website und Case-Study-System bündeln Leistung, Daten und Vision in einer klaren digitalen Geschichte.",
     motion:
-      "Architektur-Layer bewegen sich räumlich vom Bestand zur Zukunft. Schwebende Screens machen Daten, Gebäude und Ergebnis gleichzeitig erfassbar.",
+      "Räumliche Architektur-Layer verbinden Bestand, Transformation und Ergebnis zu einer intuitiven, hochwertigen Experience.",
     impact:
-      "Komplexe Leistungen werden schneller verstanden. Das stärkt Vertrauen, erhöht die wahrgenommene Projektqualität und verkürzt den Weg zum Gespräch.",
+      "Investoren verstehen den Wert schneller. Das stärkt Vertrauen und bringt fundierte Entscheidungen früher ins Gespräch.",
     accent: "#b9d58c",
     glow: "rgba(138, 176, 91, 0.28)",
     images: [
@@ -46,15 +46,15 @@ const PROJECTS: Project[] = [
     number: "02",
     name: "Bahadorifar",
     category: "Psychotherapie · Brand Experience",
-    headline: "Digitale Ruhe schafft Vertrauen vor dem ersten Gespräch.",
+    headline: "Vertrauen beginnt vor dem ersten Gespräch.",
     summary:
-      "Eine sensible Praxiswebsite, die Kompetenz und Sicherheit vermittelt, ohne klinisch oder distanziert zu wirken.",
+      "Eine ruhige digitale Identität, die fachliche Kompetenz spürbar macht und Menschen sicher zum ersten Kontakt führt.",
     built:
-      "Markenbild, Informationsarchitektur, responsive Website und eine ruhige Nutzerführung für Therapieangebote und Erstkontakt.",
+      "Markenbild, Informationsarchitektur und responsive Website schaffen Orientierung für Angebote, Haltung und Kontakt.",
     motion:
-      "Transparente Ebenen gleiten langsam durch einen hellen Raum. Die reduzierte Bewegung führt den Blick, ohne die emotionale Ruhe zu stören.",
+      "Transparente Ebenen und bewusst reduzierte Bewegung geben den Inhalten Raum und führen den Blick ohne Ablenkung.",
     impact:
-      "Ein klarer, geschützter Auftritt senkt die Kontaktbarriere. Besucher finden schneller Orientierung und gewinnen früher Vertrauen in die Praxis.",
+      "Weniger Distanz, schnellere Orientierung, mehr Vertrauen — genau dort, wo jede Kontaktaufnahme beginnt.",
     accent: "#aeb9a2",
     glow: "rgba(222, 227, 214, 0.34)",
     images: [
@@ -68,15 +68,15 @@ const PROJECTS: Project[] = [
     number: "03",
     name: "EVO Classic",
     category: "Sports · Event · Commerce",
-    headline: "Eine digitale Bühne, die Energie in Handlung verwandelt.",
+    headline: "Aus Energie entsteht Nachfrage.",
     summary:
-      "Ein immersives Event-Ökosystem für Natural Bodybuilding — von der ersten Gänsehaut bis zum Ticket und Sponsoringkontakt.",
+      "Für EVO Classic wurde aus einem Event eine starke digitale Bühne — emotional im Auftritt, klar in der Conversion.",
     built:
-      "Event-Website, 3D-Tickets, Membership-Flows, Sponsoring-Erlebnis und eine medienreiche Produkt- und Community-Präsentation.",
+      "Event-Plattform, 3D-Tickets, Membership-Flows und Sponsoring-Erlebnis verbinden Marke, Angebot und Community.",
     motion:
-      "Kamerafahrten, Bühnenlicht und gestaffelte Medienflächen erzeugen den Rhythmus eines Live-Events und verbinden alle Angebote in einer Geschichte.",
+      "Kamerafahrten, Bühnenlicht und räumliche Medien übertragen die Intensität des Live-Events auf den Screen.",
     impact:
-      "Die Inszenierung steigert Aufmerksamkeit und Erinnerungswert. Klare Übergänge führen gezielt zu Tickets, Partnerschaften und Community-Angeboten.",
+      "Mehr Aufmerksamkeit, stärkerer Erinnerungswert und klare Wege zu Tickets, Partnerschaften und Community.",
     accent: "#ff3b32",
     glow: "rgba(255, 36, 54, 0.30)",
     images: [
@@ -332,38 +332,39 @@ function ProjectScene({
       </div>
 
       <div
-        className="absolute bottom-[8vh] left-[5vw] z-10 w-[min(34rem,42vw)]"
+        className="absolute bottom-[6vh] left-[5vw] z-10 w-[min(38rem,45vw)]"
         style={{
           opacity: opacity * clamp((progress - 0.04) / 0.14),
           transform: `translate3d(0, ${34 - eased * 34}px, 0)`,
         }}
       >
-        <div
-          className="mb-4 flex items-center gap-4"
-        >
-          <span className="font-serif text-5xl font-light text-white/20">
+        <div className="mb-3 inline-flex items-center gap-3 rounded-xl border border-white/10 bg-black/40 px-3 py-2 backdrop-blur-md">
+          <span className="font-serif text-4xl font-light leading-none text-white/25">
             {project.number}
           </span>
-          <span
-            className="text-[0.62rem] uppercase tracking-[0.28em]"
-            style={{ color: project.accent }}
-          >
-            {project.category}
-          </span>
+          <div className="border-l border-white/15 pl-3">
+            <h3 className="text-[0.68rem] font-medium uppercase tracking-[0.24em] text-paper/85">
+              {project.name}
+            </h3>
+            <p
+              className="mt-1 text-[0.56rem] uppercase tracking-[0.24em]"
+              style={{ color: project.accent }}
+            >
+              {project.category}
+            </p>
+          </div>
         </div>
-        <h3 className="text-balance font-serif text-4xl font-light leading-[1.02] text-paper lg:text-5xl">
+        <p className="max-w-[14ch] text-balance font-serif text-[clamp(2.5rem,4.25vw,4.5rem)] font-light leading-[0.98] tracking-[-0.025em] text-paper">
           {project.headline}
-        </h3>
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/60">
+        </p>
+        <p className="mt-4 max-w-[34rem] text-[0.92rem] leading-6 text-paper/70">
           {project.summary}
         </p>
-        <div
-          className="mt-5 flex flex-wrap gap-2"
-        >
+        <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/15 bg-black/25 px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.14em] text-white/55 backdrop-blur-md"
+              className="rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[0.56rem] uppercase tracking-[0.14em] text-white/65 backdrop-blur-md"
             >
               {tag}
             </span>
@@ -372,25 +373,27 @@ function ProjectScene({
       </div>
 
       <aside
-        className="absolute right-[5vw] top-[17vh] z-10 w-[min(21rem,28vw)] rounded-2xl border border-white/10 bg-black/55 px-5 shadow-2xl backdrop-blur-xl"
+        className="absolute right-[4vw] top-[17vh] z-10 w-[min(22rem,30vw)] divide-y divide-white/10 rounded-[1.25rem] border border-white/12 bg-black/65 px-6 shadow-[0_32px_90px_rgba(0,0,0,.42)] backdrop-blur-xl"
         style={{ opacity: opacity * clamp((progress - 0.3) / 0.22) }}
       >
         {[
-          ["Was wir gebaut haben", project.built],
-          ["3D & Motion", project.motion],
-          ["Business-Wirkung", project.impact],
+          ["Strategische Lösung", project.built],
+          ["Digitale Experience", project.motion],
+          ["Messbare Wirkung", project.impact],
         ].map(([title, copy]) => (
           <div
             key={title}
-            className="border-t border-white/12 py-4 backdrop-blur-sm"
+            className="py-4 first:pt-5 last:pb-5"
           >
             <strong
-              className="text-[0.58rem] uppercase tracking-[0.22em]"
+              className="text-[0.56rem] font-medium uppercase tracking-[0.22em]"
               style={{ color: project.accent }}
             >
               {title}
             </strong>
-            <p className="mt-2 text-xs leading-relaxed text-white/52">{copy}</p>
+            <p className="mt-2 text-[0.76rem] leading-[1.65] text-white/65">
+              {copy}
+            </p>
           </div>
         ))}
       </aside>
@@ -406,7 +409,7 @@ function PortfolioFallback() {
           Portfolio
         </span>
         <h2 className="mt-4 max-w-3xl text-balance font-serif text-4xl font-light leading-[1.08] text-paper sm:text-5xl">
-          Drei digitale Welten. Ein Anspruch: Wirkung, die bleibt.
+          Digitale Erfahrungen, die Geschäft bewegen.
         </h2>
         <div className="mt-14 grid gap-8">
           {PROJECTS.map((project) => (
@@ -414,7 +417,7 @@ function PortfolioFallback() {
               key={project.name}
               className="overflow-hidden rounded-3xl border border-paper/10 bg-ink-soft"
             >
-              <div className="relative aspect-[16/10]">
+              <div className="relative aspect-[4/5] sm:aspect-[16/10]">
                 <Image
                   src={project.images[0]}
                   alt={`${project.name} Website`}
@@ -422,7 +425,7 @@ function PortfolioFallback() {
                   sizes="(max-width: 1023px) 100vw, 1px"
                   className="object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9">
                   <span
                     className="text-[0.6rem] uppercase tracking-[0.24em]"
@@ -430,10 +433,13 @@ function PortfolioFallback() {
                   >
                     {project.category}
                   </span>
-                  <h3 className="mt-2 font-serif text-3xl text-white">
+                  <h3 className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-white/75">
                     {project.name}
                   </h3>
-                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65">
+                  <p className="mt-3 max-w-xl text-balance font-serif text-3xl font-light leading-[1.04] text-white sm:text-4xl">
+                    {project.headline}
+                  </p>
+                  <p className="mt-4 max-w-xl text-sm leading-6 text-white/70">
                     {project.summary}
                   </p>
                 </div>

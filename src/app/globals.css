@@ -1,26 +1,164 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0a0a09;
+  --ink-soft: #131210;
+  --paper: #faf8f4;
+  --paper-dim: #e9e4d9;
+
+  --beige-100: #f4ede0;
+  --beige-200: #e9dcc4;
+  --beige-300: #dbc7a1;
+  --beige-400: #cbb082;
+  --beige-500: #b89462;
+  --beige-600: #9c7a4b;
+  --beige-900: #4a3a25;
+
+  --signal-red: #ff2436;
+  --signal-red-dim: #b8101f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+
+  --color-beige-100: var(--beige-100);
+  --color-beige-200: var(--beige-200);
+  --color-beige-300: var(--beige-300);
+  --color-beige-400: var(--beige-400);
+  --color-beige-500: var(--beige-500);
+  --color-beige-600: var(--beige-600);
+  --color-beige-900: var(--beige-900);
+
+  --color-signal: var(--signal-red);
+  --color-signal-dim: var(--signal-red-dim);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+::selection {
+  background: var(--signal-red);
+  color: var(--paper);
+}
+
+/* Custom cursor: hide native pointer once the trail is active */
+.cursor-active,
+.cursor-active * {
+  cursor: none !important;
+}
+
+@media (max-width: 767px), (hover: none) {
+  .cursor-active,
+  .cursor-active * {
+    cursor: auto !important;
+  }
+}
+
+@keyframes fade-up-premium {
+  0% {
+    opacity: 0;
+    transform: translateY(2.25rem);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-fade-up-premium {
+  animation: fade-up-premium 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, 2%, 0) scale(1.06);
+  }
+}
+
+.animate-drift {
+  animation: drift 22s ease-in-out infinite;
+}
+
+@keyframes drift-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  50% {
+    transform: translate3d(3%, -3%, 0) scale(1.02);
+  }
+}
+
+.animate-drift-slow {
+  animation: drift-slow 30s ease-in-out infinite;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up-premium,
+  .animate-drift,
+  .animate-drift-slow {
+    animation: none !important;
+  }
+}
+@keyframes portfolio-camera-drift {
+  0% {
+    opacity: 0.35;
+    transform: translate3d(0, 7vh, 0) scale(0.94);
+  }
+  22%, 72% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0.25;
+    transform: translate3d(0, -6vh, 0) scale(1.055);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .portfolio-scroll-chapter {
+    view-timeline-name: --portfolio-chapter;
+    view-timeline-axis: block;
+  }
+
+  .portfolio-scroll-scene {
+    animation: portfolio-camera-drift linear both;
+    animation-timeline: --portfolio-chapter;
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-scroll-scene {
+    animation: none;
+  }
 }

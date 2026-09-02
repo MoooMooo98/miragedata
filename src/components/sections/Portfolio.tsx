@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import PortfolioWebGL from "@/components/sections/PortfolioWebGL";
 
 type Project = {
   number: string;
@@ -102,52 +103,105 @@ const sceneOpacity = (progress: number, isLast: boolean) => {
   return 1;
 };
 
-/**
- * Tracks, per "chapter" (one tall wrapper per project), how far the
- * visitor has scrolled through it while it's pinned — 0 when the chapter
- * just reached the top of the viewport, 1 right before it releases. This
- * is what actually drives the 3D scene; without it the composition never
- * moves and just sits on one static pose.
- */
-function useChapterScrollProgress(count: number) {
-  const chapterRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [progress, setProgress] = useState<number[]>(() =>
-    Array(count).fill(0)
-  );
+function usePortfolioMotion() {
+  const rootRef = useRef<HTMLElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let lastKey = "";
+    let frame = 0;
+    let last = -1;
 
-    // Driven directly by real scroll/resize events rather than a
-    // free-running requestAnimationFrame loop — cheaper when idle, and
-    // (unlike rAF) not silently throttled by browsers on a backgrounded
-    // or momentarily hidden tab.
     const measure = () => {
+      frame = 0;
+      const el = stageRef.current;
+      if (!el) return;
       const vh = window.innerHeight || 1;
-      const next = chapterRefs.current.map((el) => {
-        if (!el) return 0;
-        const rect = el.getBoundingClientRect();
-        const scrollable = rect.height - vh;
-        if (scrollable <= 0) return rect.top <= 0 ? 1 : 0;
-        return clamp(-rect.top / scrollable);
-      });
-      const key = next.map((n) => n.toFixed(3)).join(",");
-      if (key !== lastKey) {
-        lastKey = key;
+      const rect = el.getBoundingClientRect();
+      const scrollable = rect.height - vh;
+      const next = scrollable > 0 ? clamp(-rect.top / scrollable) : 0;
+      if (Math.abs(next - last) > 0.0005) {
+        last = next;
         setProgress(next);
       }
     };
 
-    measure();
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure);
-    return () => {
-      window.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
+    const requestMeasure = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
     };
-  }, [count]);
 
-  return { chapterRefs, progress };
+    requestMeasure();
+    window.addEventListener("scroll", requestMeasure, { passive: true });
+    window.addEventListener("resize", requestMeasure);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", requestMeasure);
+      window.removeEventListener("resize", requestMeasure);
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (
+      !root ||
+      window.matchMedia("(hover: none)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const target = { x: 0, y: 0 };
+    const current = { x: 0, y: 0 };
+    let frame = 0;
+
+    const render = () => {
+      current.x += (target.x - current.x) * 0.075;
+      current.y += (target.y - current.y) * 0.075;
+      root.style.setProperty("--portfolio-x", `${current.x * 22}px`);
+      root.style.setProperty("--portfolio-y", `${current.y * 14}px`);
+      root.style.setProperty("--portfolio-rx", `${current.y * -3.2}deg`);
+      root.style.setProperty("--portfolio-ry", `${current.x * 4.6}deg`);
+      root.style.setProperty(
+        "--portfolio-cursor-x",
+        `${50 + current.x * 28}%`,
+      );
+      root.style.setProperty(
+        "--portfolio-cursor-y",
+        `${50 + current.y * 24}%`,
+      );
+
+      const moving =
+        Math.abs(target.x - current.x) > 0.001 ||
+        Math.abs(target.y - current.y) > 0.001;
+      frame = moving ? requestAnimationFrame(render) : 0;
+    };
+
+    const start = () => {
+      if (!frame) frame = requestAnimationFrame(render);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      target.x = clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
+      target.y = clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
+      start();
+    };
+
+    const onPointerLeave = () => {
+      target.x = 0;
+      target.y = 0;
+      start();
+    };
+
+    root.addEventListener("pointermove", onPointerMove, { passive: true });
+    root.addEventListener("pointerleave", onPointerLeave);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      root.removeEventListener("pointermove", onPointerMove);
+      root.removeEventListener("pointerleave", onPointerLeave);
+    };
+  }, []);
+
+  return { rootRef, stageRef, progress };
 }
 
 function BrowserFrame({
@@ -226,7 +280,7 @@ function ProjectScene({
   const sideBStyle: CSSProperties = {
     opacity: opacity * clamp((progress - 0.22) / 0.2),
     transform: `translate(-50%, -50%) translate3d(${direction * (410 - eased * 100)}px, ${
-      175 - eased * 54
+      -96 + eased * 42
     }px, ${-330 + eased * 130}px) rotateY(${direction * -21}deg) rotateZ(${
       direction * 3
     }deg)`,
@@ -249,10 +303,11 @@ function ProjectScene({
         }}
       />
 
-      <div className="absolute inset-0 [perspective:1500px] [transform-style:preserve-3d]">
-        <div
-          className="absolute left-1/2 top-1/2 h-[58vh] w-[64vw] max-w-[920px] -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
-        >
+      <div className="absolute inset-0 [perspective:1600px] [transform-style:preserve-3d]">
+        <div className="portfolio-parallax-rig absolute inset-0 [transform-style:preserve-3d]">
+          <div
+            className="absolute left-1/2 top-1/2 h-[58vh] w-[64vw] max-w-[920px] -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
+          >
           <BrowserFrame
             src={project.images[0]}
             label={`${project.name} · Start`}
@@ -272,13 +327,14 @@ function ProjectScene({
             className="left-1/2 top-1/2 h-[24vh] w-[28vw] max-w-[400px] -translate-x-1/2 -translate-y-1/2"
             style={sideBStyle}
           />
+          </div>
         </div>
       </div>
 
       <div
         className="absolute bottom-[8vh] left-[5vw] z-10 w-[min(34rem,42vw)]"
         style={{
-          opacity: opacity * clamp((progress - 0.08) / 0.18),
+          opacity: opacity * clamp((progress - 0.04) / 0.14),
           transform: `translate3d(0, ${34 - eased * 34}px, 0)`,
         }}
       >
@@ -317,7 +373,7 @@ function ProjectScene({
 
       <aside
         className="absolute right-[5vw] top-[17vh] z-10 w-[min(21rem,28vw)] rounded-2xl border border-white/10 bg-black/55 px-5 shadow-2xl backdrop-blur-xl"
-        style={{ opacity: opacity * clamp((progress - 0.38) / 0.22) }}
+        style={{ opacity: opacity * clamp((progress - 0.3) / 0.22) }}
       >
         {[
           ["Was wir gebaut haben", project.built],
@@ -363,7 +419,7 @@ function PortfolioFallback() {
                   src={project.images[0]}
                   alt={`${project.name} Website`}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 1023px) 100vw, 1px"
                   className="object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
@@ -391,61 +447,77 @@ function PortfolioFallback() {
 }
 
 export default function Portfolio() {
-  const { chapterRefs, progress } = useChapterScrollProgress(PROJECTS.length);
+  const { rootRef, stageRef, progress } = usePortfolioMotion();
+  const sceneProgress = PROJECTS.map((_, index) =>
+    clamp((progress * PROJECTS.length - index + 0.2) / 1.2),
+  );
+  const activeIndex = Math.min(
+    PROJECTS.length - 1,
+    Math.max(0, Math.floor(progress * PROJECTS.length)),
+  );
 
   return (
     <section
+      ref={rootRef}
       id="portfolio"
       className="relative bg-ink"
       aria-label="Ausgewählte Mirage Data Projekte"
     >
-      <div className="md:hidden">
+      <div className="portfolio-static-fallback lg:hidden">
         <PortfolioFallback />
       </div>
 
-      <div className="hidden md:block">
-        {PROJECTS.map((project, index) => (
-          <div
-            key={project.name}
-            ref={(el) => {
-              chapterRefs.current[index] = el;
-            }}
-            className="portfolio-scroll-chapter relative h-[155vh] bg-[#080807]"
-          >
-            <div className="portfolio-scroll-scene sticky top-0 h-screen overflow-hidden bg-[#080807]">
-              <div className="pointer-events-none absolute inset-0 z-20 border-[clamp(.75rem,2vw,1.75rem)] border-[#080807]" />
-              <div className="pointer-events-none absolute inset-0 z-10 opacity-[0.16] [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(circle_at_center,black,transparent_78%)]" />
+      <div className="portfolio-immersive-stage hidden lg:block">
+        <div ref={stageRef} className="relative h-[460vh] bg-[#080807]">
+          <div className="portfolio-sticky-viewport sticky top-20 h-[calc(100vh-5rem)] overflow-hidden bg-[#080807]">
+            <PortfolioWebGL progress={progress} />
+            <div
+              className="pointer-events-none absolute inset-0 z-[5]"
+              style={{
+                background:
+                  "radial-gradient(circle at var(--portfolio-cursor-x, 50%) var(--portfolio-cursor-y, 50%), rgba(219,199,161,.09), transparent 34%)",
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0 z-20 border-[clamp(.75rem,2vw,1.75rem)] border-[#080807]" />
+            <div className="pointer-events-none absolute inset-0 z-10 opacity-[0.13] [background-image:linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(circle_at_center,black,transparent_78%)]" />
 
+            {PROJECTS.map((project, index) => (
               <ProjectScene
+                key={project.name}
                 project={project}
                 index={index}
-                progress={progress[index] ?? 0}
+                progress={sceneProgress[index]}
               />
+            ))}
 
-              <header className="absolute left-[4vw] right-[4vw] top-[4vh] z-30 flex items-start justify-between">
-                <div>
-                  <span className="text-[0.58rem] uppercase tracking-[0.35em] text-beige-400">
-                    Selected work · Spatial portfolio
-                  </span>
-                  <p className="mt-2 text-xs text-white/35">
-                    Scrollen bewegt die Kamera durch drei digitale Welten.
-                  </p>
+            <header className="absolute left-[4vw] right-[4vw] top-[4vh] z-30 flex items-start justify-between">
+              <div>
+                <span className="text-[0.58rem] uppercase tracking-[0.35em] text-beige-400">
+                  Selected work · Spatial portfolio
+                </span>
+                <p className="mt-2 text-xs text-white/35">
+                  Scrollen bewegt die Kamera · Der Cursor verschiebt die Tiefe.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[0.6rem] tabular-nums tracking-[0.2em] text-white/45">
+                  {String(activeIndex + 1).padStart(2, "0")} / 03
+                </span>
+                <div className="h-px w-28 overflow-hidden bg-white/20">
+                  <div
+                    className="h-full origin-left bg-beige-300"
+                    style={{ transform: `scaleX(${progress})` }}
+                  />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[0.6rem] tabular-nums tracking-[0.2em] text-white/45">
-                    {String(index + 1).padStart(2, "0")} / 03
-                  </span>
-                  <div className="h-px w-28 bg-white/20">
-                    <div
-                      className="h-full bg-beige-300"
-                      style={{ width: `${((index + 1) / PROJECTS.length) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              </header>
+              </div>
+            </header>
+
+            <div className="pointer-events-none absolute bottom-[4vh] right-[4vw] z-30 flex items-center gap-3 text-[0.55rem] uppercase tracking-[0.22em] text-white/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-beige-300 shadow-[0_0_18px_rgba(219,199,161,.8)]" />
+              Live spatial scene
             </div>
           </div>
-        ))}
+        </div>
 
         <div className="relative h-[110vh] bg-paper text-ink">
           <div className="sticky top-0 flex h-screen items-center justify-center text-center">

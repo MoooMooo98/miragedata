@@ -129,36 +129,38 @@ body {
     animation: none !important;
   }
 }
-@keyframes portfolio-camera-drift {
-  0% {
-    opacity: 0.35;
-    transform: translate3d(0, 7vh, 0) scale(0.94);
-  }
-  22%, 72% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  100% {
-    opacity: 0.25;
-    transform: translate3d(0, -6vh, 0) scale(1.055);
-  }
+.portfolio-sticky-viewport {
+  isolation: isolate;
+  contain: paint;
 }
 
-@supports (animation-timeline: view()) {
-  .portfolio-scroll-chapter {
-    view-timeline-name: --portfolio-chapter;
-    view-timeline-axis: block;
-  }
+.portfolio-parallax-rig {
+  transform: translate3d(
+      var(--portfolio-x, 0px),
+      var(--portfolio-y, 0px),
+      0
+    )
+    rotateX(var(--portfolio-rx, 0deg)) rotateY(var(--portfolio-ry, 0deg));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
 
-  .portfolio-scroll-scene {
-    animation: portfolio-camera-drift linear both;
-    animation-timeline: --portfolio-chapter;
-    animation-range: cover 0% cover 100%;
-  }
+[data-portfolio-project] figure {
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portfolio-scroll-scene {
-    animation: none;
+  .portfolio-static-fallback {
+    display: block !important;
+  }
+
+  .portfolio-immersive-stage {
+    display: none !important;
+  }
+
+  .portfolio-parallax-rig {
+    transform: none;
   }
 }
